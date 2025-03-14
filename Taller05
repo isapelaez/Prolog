@@ -1,1 +1,12 @@
+% Hechos.
+padre_de(abraham, [homero,herbert]).
+padre_de(homero, [bart,lisa,maggie]).
+padre_de(clancy, [marge,patty,selma]).
 
+madre_de(mona, [homero,herbert]).
+madre_de(marge, [bart,lisa,maggie]).
+madre_de(jacqueline, [marge,patty,selma]).
+madre_de(selma, [ling]).
+
+mujer([mona,marge,lisa,maggie,jacqueline,patty,selma,ling]).
+hombre([abraham,homero,herbert,bart,clancy,homero]).
