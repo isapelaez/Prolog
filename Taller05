@@ -1,4 +1,4 @@
-% Hechos.
+% Hechos
 padre_de(abraham, [homero,herbert]).
 padre_de(homero, [bart,lisa,maggie]).
 padre_de(clancy, [marge,patty,selma]).
