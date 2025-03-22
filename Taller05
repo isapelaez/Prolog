@@ -10,3 +10,91 @@ madre_de(selma, [ling]).
 
 mujer([mona,marge,lisa,maggie,jacqueline,patty,selma,ling]).
 hombre([abraham,homero,herbert,bart,clancy,homero]).
+
+% Listas de relaciones familiares
+padres([
+    (abraham, homero),
+    (abraham, herbert),
+    (homero, bart),
+    (homero, lisa),
+    (homero, maggie),
+    (clancy, marge),
+    (clancy, patty),
+    (clancy, selma)
+]).
+
+madres([
+    (mona, homero),
+    (mona, herbert),
+    (marge, bart),
+    (marge, lisa),
+    (marge, maggie),
+    (jacqueline, marge),
+    (jacqueline, patty),
+    (jacqueline, selma),
+    (selma, ling)
+]).
+
+hombres([abraham, homero, herbert, bart, clancy]).
+mujeres([mona, marge, lisa, maggie, jacqueline, patty, selma, ling]).
+
+% Definiendo reglas para consultar las listas
+
+% Regla para encontrar un padre
+padre_de(X, Y) :-
+    padres(L), member((X, Y), L).
+
+% Regla para encontrar una madre
+madre_de(X, Y) :-
+    madres(L), member((X, Y), L).
+
+% Regla para determinar si alguien es hombre
+hombre(X) :-
+    hombres(L), member(X, L).
+
+% Regla para determinar si alguien es mujer
+mujer(X) :-
+    mujeres(L), member(X, L).
+
+% Regla para encontrar abuelos y abuelas
+abuelo_de(X, Y) :- padre_de(X, Z), (padre_de(Z, Y); madre_de(Z, Y)).
+abuela_de(X, Y) :- madre_de(X, Z), (padre_de(Z, Y); madre_de(Z, Y)).
+
+% Reglas de hermanos y hermanas
+hermana_de(A, B) :- 
+    mujer(A), 
+    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)), 
+    A \= B.
+
+hermano_de(A, B) :- 
+    hombre(A), 
+    (padre_de(Z, A), padre_de(Z, B)), 
+    A \= B, !.
+    %; madre_de(Z, A), madre_de(Z, B))
+
+% Reglas de tíos y tías
+tia_de(C, D) :- 
+    mujer(C), 
+    (hermana_de(C, Z), madre_de(Z, D)); 
+    mujer(C), 
+    (hermana_de(C, Z), padre_de(Z, D)).
+
+tio_de(C, D) :- 
+    hombre(C), 
+    (hermano_de(C, Z), madre_de(Z, D)); 
+    hombre(C), 
+    (hermano_de(C, Z), padre_de(Z, D)).
+
+% Reglas de primos y primas
+prima_de(E, F) :- 
+    mujer(E), 
+    (madre_de(Z, E), tia_de(Z, F)); 
+    mujer(E), 
+    (padre_de(Z, E), tio_de(Z, F)).
+
+primo_de(E, F) :- 
+    hombre(E), 
+    (madre_de(Z, E), tia_de(Z, F)); 
+    hombre(E), 
+    (padre_de(Z, E), tio_de(Z, F)).
+
