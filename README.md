@@ -1,1 +1,1 @@
-Taller de prolog
+Taller de prolog.
