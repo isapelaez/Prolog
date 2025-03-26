@@ -1,17 +1,4 @@
-% Hechos
-padre_de(abraham, [homero,herbert]).
-padre_de(homero, [bart,lisa,maggie]).
-padre_de(clancy, [marge,patty,selma]).
-
-madre_de(mona, [homero,herbert]).
-madre_de(marge, [bart,lisa,maggie]).
-madre_de(jacqueline, [marge,patty,selma]).
-madre_de(selma, [ling]).
-
-mujer([mona,marge,lisa,maggie,jacqueline,patty,selma,ling]).
-hombre([abraham,homero,herbert,bart,clancy,homero]).
-
-% Listas de relaciones familiares
+% Hechos Listados
 padres([
     (abraham, homero),
     (abraham, herbert),
@@ -38,63 +25,60 @@ madres([
 hombres([abraham, homero, herbert, bart, clancy]).
 mujeres([mona, marge, lisa, maggie, jacqueline, patty, selma, ling]).
 
-% Definiendo reglas para consultar las listas
+% Reglas 
 
-% Regla para encontrar un padre
-padre_de(X, Y) :-
-    padres(L), member((X, Y), L).
-
-% Regla para encontrar una madre
-madre_de(X, Y) :-
-    madres(L), member((X, Y), L).
-
-% Regla para determinar si alguien es hombre
 hombre(X) :-
-    hombres(L), member(X, L).
+    hombres(L), 
+    member(X, L).
 
-% Regla para determinar si alguien es mujer
 mujer(X) :-
-    mujeres(L), member(X, L).
+    mujeres(L), 
+    member(X, L).
 
-% Regla para encontrar abuelos y abuelas
-abuelo_de(X, Y) :- padre_de(X, Z), (padre_de(Z, Y); madre_de(Z, Y)).
-abuela_de(X, Y) :- madre_de(X, Z), (padre_de(Z, Y); madre_de(Z, Y)).
+padre_de(X, Y) :-
+    padres(L), 
+    member((X, Y), L).
 
-% Reglas de hermanos y hermanas
+madre_de(X, Y) :-
+    madres(L), 
+    member((X, Y), L).
+
+abuelo_de(X, Y) :- 
+    hombre(X), 
+    (padre_de(X, Z); madre_de(X, Z)), 
+    (padre_de(Z, Y); madre_de(Z, Y)).
+
+abuela_de(X, Y) :- 
+    mujer(X), 
+    (padre_de(X, Z); madre_de(X, Z)), 
+    (padre_de(Z, Y); madre_de(Z, Y)).
+
 hermana_de(A, B) :- 
-    mujer(A), 
-    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)), 
+    mujer(A),
+    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)),
     A \= B.
 
 hermano_de(A, B) :- 
     hombre(A), 
-    (padre_de(Z, A), padre_de(Z, B)), 
-    A \= B, !.
-    %; madre_de(Z, A), madre_de(Z, B))
+    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)), 
+    A \= B.
 
-% Reglas de tíos y tías
 tia_de(C, D) :- 
     mujer(C), 
-    (hermana_de(C, Z), madre_de(Z, D)); 
-    mujer(C), 
-    (hermana_de(C, Z), padre_de(Z, D)).
+    (hermana_de(C, Z), padre_de(Z, D)); 
+    (hermana_de(C, Z), madre_de(Z, D)).
 
 tio_de(C, D) :- 
     hombre(C), 
-    (hermano_de(C, Z), madre_de(Z, D)); 
-    hombre(C), 
-    (hermano_de(C, Z), padre_de(Z, D)).
+    (hermano_de(C, Z), padre_de(Z, D)); 
+    (hermano_de(C, Z), madre_de(Z, D)).
 
-% Reglas de primos y primas
 prima_de(E, F) :- 
-    mujer(E), 
-    (madre_de(Z, E), tia_de(Z, F)); 
-    mujer(E), 
-    (padre_de(Z, E), tio_de(Z, F)).
+    mujer(E),
+    (padre_de(Z, E), hermano_de(Z, W), (padre_de(W, F); madre_de(W, F))); 
+    (madre_de(Z, E), hermana_de(Z, W), (padre_de(W, F); madre_de(W, F))).
 
 primo_de(E, F) :- 
-    hombre(E), 
-    (madre_de(Z, E), tia_de(Z, F)); 
-    hombre(E), 
-    (padre_de(Z, E), tio_de(Z, F)).
-
+    hombre(E),
+    (padre_de(Z, E), hermano_de(Z, W), (padre_de(W, F); madre_de(W, F))); 
+    (madre_de(Z, E), hermana_de(Z, W), (padre_de(W, F); madre_de(W, F))).
