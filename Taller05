@@ -45,12 +45,12 @@ madre_de(X, Y) :-
 
 abuelo_de(X, Y) :- 
     hombre(X), 
-    (padre_de(X, Z); madre_de(X, Z)), 
+    padre_de(X, Z), 
     (padre_de(Z, Y); madre_de(Z, Y)).
 
 abuela_de(X, Y) :- 
     mujer(X), 
-    (padre_de(X, Z); madre_de(X, Z)), 
+    madre_de(X, Z) 
     (padre_de(Z, Y); madre_de(Z, Y)).
 
 hermana_de(A, B) :- 
