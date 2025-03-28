@@ -46,39 +46,39 @@ madre_de(X, Y) :-
 abuelo_de(X, Y) :- 
     hombre(X), 
     padre_de(X, Z), 
-    (padre_de(Z, Y); madre_de(Z, Y)).
+    (padre_de(Z, Y); madre_de(Z, Y)), !.
 
 abuela_de(X, Y) :- 
     mujer(X), 
-    madre_de(X, Z) 
-    (padre_de(Z, Y); madre_de(Z, Y)).
+    madre_de(X, Z), 
+    (padre_de(Z, Y); madre_de(Z, Y)), !.
 
 hermana_de(A, B) :- 
     mujer(A),
-    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)),
+    (padre_de(Z, A), padre_de(Z, B)),
     A \= B.
 
 hermano_de(A, B) :- 
     hombre(A), 
-    (padre_de(Z, A), padre_de(Z, B); madre_de(Z, A), madre_de(Z, B)), 
+    (padre_de(Z, A), padre_de(Z, B)), 
     A \= B.
 
 tia_de(C, D) :- 
     mujer(C), 
-    (hermana_de(C, Z), padre_de(Z, D)); 
-    (hermana_de(C, Z), madre_de(Z, D)).
+    ((hermana_de(C, Z), padre_de(Z, D)); 
+    (hermana_de(C, Z), madre_de(Z, D))), !.
 
 tio_de(C, D) :- 
     hombre(C), 
-    (hermano_de(C, Z), padre_de(Z, D)); 
-    (hermano_de(C, Z), madre_de(Z, D)).
+    ((hermano_de(C, Z), madre_de(Z, D));
+    (hermano_de(C, Z), padre_de(Z, D))), !.
 
 prima_de(E, F) :- 
     mujer(E),
-    (padre_de(Z, E), hermano_de(Z, W), (padre_de(W, F); madre_de(W, F))); 
-    (madre_de(Z, E), hermana_de(Z, W), (padre_de(W, F); madre_de(W, F))).
+    ((tia_de(W, F), madre_de(W, E));
+    (tio_de(W, F), padre_de(W, E))), !.
 
 primo_de(E, F) :- 
     hombre(E),
-    (padre_de(Z, E), hermano_de(Z, W), (padre_de(W, F); madre_de(W, F))); 
-    (madre_de(Z, E), hermana_de(Z, W), (padre_de(W, F); madre_de(W, F))).
+    ((tia_de(W, F), madre_de(W, E));
+    (tio_de(W, F), padre_de(W, E))), !.
