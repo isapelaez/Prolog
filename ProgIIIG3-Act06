@@ -1,0 +1,63 @@
+% Hechos de personas
+persona(abraham, hombre).
+persona(homero, hombre).
+persona(herbert, hombre).
+persona(clancy, hombre).
+persona(bart, hombre).
+persona(marge, mujer).
+persona(patty, mujer).
+persona(selma, mujer).
+persona(lisa, mujer).
+persona(maggie, mujer).
+persona(mona, mujer).
+persona(jacqueline, mujer).
+persona(ling, mujer).
+
+% Hechos estructurados para padres y madres
+padre_de(hombre(abraham, [homero, herbert])).
+padre_de(hombre(clancy, [marge, patty, selma])).
+padre_de(hombre(homero, [bart, lisa, maggie])).
+
+madre_de(mujer(mona, [homero,herbert])).
+madre_de(mujer(jacqueline, [marge, patty, selma])).
+madre_de(mujer(marge, [bart, lisa, maggie])).
+madre_de(mujer(selma, [ling])).
+
+% Reglas
+padre_de(Padre, Hijo) :-
+    padre_de(hombre(Padre, Hijos)),
+    member(Hijo, Hijos).
+
+madre_de(Madre, Hijo) :-
+    madre_de(mujer(Madre, Hijos)),
+    member(Hijo, Hijos).
+
+abuelo_de(Abuelo, Nieto) :-
+    padre_de(Abuelo, Padre),
+    (padre_de(Padre, Nieto); madre_de(Padre, Nieto)).
+
+abuela_de(Abuela, Nieto) :-
+    madre_de(Abuela, Madre),
+    (padre_de(Madre, Nieto); madre_de(Madre, Nieto)).
+
+hermano_de(Hermano1, Hermano2) :-
+    (padre_de(Padre, Hermano1), padre_de(Padre, Hermano2));
+    (madre_de(Madre, Hermano1), madre_de(Madre, Hermano2)),
+    Hermano1 \= Hermano2,
+    persona(Hermano1, hombre).
+
+hermana_de(Hermana, Hermano) :-
+    (padre_de(Padre, Hermana), padre_de(Padre, Hermano));
+    (madre_de(Madre, Hermana), madre_de(Madre, Hermano)),
+    Hermana \= Hermano,
+    persona(Hermana, mujer).
+
+primo_de(Primo1, Primo2) :-
+    madre_de(Madre1, Primo1), madre_de(Madre2, Primo2),
+    Madre1 \= Madre2, 
+    hermana_de(Madre1, Madre2),
+    Primo1 \= Primo2.
+
+prima_de(Prima, Primo) :-
+    primo_de(Prima, Primo),
+    persona(Prima, mujer).
