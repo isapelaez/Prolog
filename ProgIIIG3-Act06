@@ -59,24 +59,28 @@ tia_de(Tia, Sobrino) :-
     (padre_de(PadreMadre, Sobrino) ; madre_de(PadreMadre, Sobrino)), !.
    
 primo_de(Primo, Persona) :-
+    persona(Primo, hombre),
     padre_de(Padre1, Primo),
     padre_de(Padre2, Persona),
     hermano_de(Padre1, Padre2),
     Primo \= Persona.
 
 primo_de(Primo, Persona) :-
+    persona(Primo, hombre),
     madre_de(Madre1, Primo),
     madre_de(Madre2, Persona),
     hermana_de(Madre1, Madre2),
     Primo \= Persona.
 
 prima_de(Prima, Persona) :-
+    persona(Prima, mujer),
     padre_de(Padre1, Prima),
     padre_de(Padre2, Persona),
     hermano_de(Padre1, Padre2),
     Prima \= Persona.
 
 prima_de(Prima, Persona) :-
+    persona(Prima, mujer),
     madre_de(Madre1, Prima),
     madre_de(Madre2, Persona),
     hermana_de(Madre1, Madre2),
